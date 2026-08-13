@@ -1,0 +1,5 @@
+session_id,started_at,ended_at,end_reason,total_cost_usd,input_tokens,output_tokens,cache_creation_tokens,cache_read_tokens,total_tokens,models,git_branch
+a9d56b7a-4c18-4ddb-bae4-80e6c1567445,2026-08-13T05:22:36.931Z,2026-08-13T05:56:29.655Z,other,2.029745,149,37050,191217,3293717,3522133,claude-opus-4-8,HEAD
+235ca945-9ef8-4343-bafb-15630ae4abdd,2026-08-13T05:44:32.534Z,2026-08-13T05:46:37.299Z,other,0.175546,18,3575,28222,216116,247931,claude-opus-4-8,add-notion-link-rereader
+649bc7c7-f54d-49f7-aa54-68b5d2f38c9f,2026-08-13T05:58:34.840Z,2026-08-13T06:23:11.441Z,other,2.841357,211,55596,281204,5802280,6139291,claude-opus-4-8,add-notion-link-rereader
+0dde5c97-bc82-4de0-934f-5320f02c334a,2026-08-13T06:30:08.499Z,2026-08-13T07:27:38.208Z,backfill,0.829729,58,14847,173866,835420,1024191,claude-opus-4-8,add-notion-link-rereader
