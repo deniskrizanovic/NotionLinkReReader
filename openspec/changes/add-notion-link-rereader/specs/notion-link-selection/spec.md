@@ -1,13 +1,19 @@
 ## ADDED Requirements
 
 ### Requirement: Query the configured Notion database
-The system SHALL query the Notion database identified by the configured database id, using the configured integration token, and retrieve its rows.
+The system SHALL query the Notion database identified by the configured database id, using the configured integration token, and retrieve all of its rows, following pagination until every row has been fetched.
 
 #### Scenario: Database returns rows
 > **Tests:** none
 - **GIVEN** a valid integration token and a database id shared with that integration
 - **WHEN** the job queries the database
 - **THEN** the system receives the database rows for normalization
+
+#### Scenario: Database exceeds one page of rows
+> **Tests:** test_query_follows_pagination
+- **GIVEN** a database whose row count exceeds a single Notion response page
+- **WHEN** the job queries the database
+- **THEN** the system follows the pagination cursor until exhausted so that every row across all pages is eligible for selection
 
 #### Scenario: Missing required configuration
 > **Tests:** none

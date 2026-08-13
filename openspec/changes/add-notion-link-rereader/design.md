@@ -54,7 +54,7 @@ A user LaunchAgent plist (`~/Library/LaunchAgents/`) fires the `uv run` entrypoi
 - Gmail app password / "less secure" friction or rotation. → Use an app password (not account password); read from env so rotation is a one-line change; never commit.
 - Secrets leaking into git. → `.env` gitignored (already in place); only `.env.example` committed.
 - Mac asleep/off at 05:00. → `launchd` catch-up covers sleep; powered-off-through-window still misses that day (accepted — repeats OK, next day resurfaces).
-- Notion pagination: a large database returns only the first page (100 rows). → Acceptable for random sampling from a personal link list; note as a known limit, add cursor paging later if needed.
+- Notion pagination: the database exceeds 100 rows, so cursor paging is implemented — `query_database` follows `next_cursor` until `has_more` is false, making the whole database eligible for selection.
 - HTML-only mail clients / spam filtering of self-sent mail. → Include plain-text alternative part; sending to self on same Gmail is low spam risk.
 
 ## Migration Plan
@@ -63,4 +63,4 @@ Greenfield — no migration. Deployment steps: create Notion integration + share
 
 ## Open Questions
 
-- None blocking. Pagination beyond 100 rows and a possible move to a cloud runner are deferred, not required for first delivery.
+- None blocking. Pagination beyond 100 rows is now implemented (see Risks). A possible move to a cloud runner is deferred, not required for first delivery.

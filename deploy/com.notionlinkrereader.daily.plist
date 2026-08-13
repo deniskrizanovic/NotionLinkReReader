@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  macOS LaunchAgent for Notion Link ReReader.
+
+  Placeholders to replace before installing:
+    __PROJECT_DIR__ — absolute path to this repo checkout
+    __UV_PATH__     — absolute path to the `uv` binary (`which uv`)
+
+  Secrets are NOT stored here. See README: the job reads them from a `.env`
+  loaded by `uv run`. Install to ~/Library/LaunchAgents/ and `launchctl load`.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.notionlinkrereader.daily</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__UV_PATH__</string>
+        <string>run</string>
+        <string>--env-file</string>
+        <string>.env</string>
+        <string>notion-link-rereader</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__PROJECT_DIR__</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>5</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__PROJECT_DIR__/logs/rereader.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__PROJECT_DIR__/logs/rereader.err.log</string>
+</dict>
+</plist>
