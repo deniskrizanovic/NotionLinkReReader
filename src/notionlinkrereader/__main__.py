@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import sys
+from datetime import date
 
 from .config import load_config
 from .email import build_message, send_message
@@ -22,7 +23,10 @@ def run() -> None:
     logger.info("Selected %d of %d links", len(selected), len(records))
 
     message = build_message(
-        selected, sender=config.gmail_address, recipient=config.email_to
+        selected,
+        sender=config.gmail_address,
+        recipient=config.email_to,
+        run_date=date.today(),
     )
     send_message(
         message,
