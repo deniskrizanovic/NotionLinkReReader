@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "gherkin-authoring": {
+      "source": "deniskrizanovic/dk-skills",
+      "sourceType": "github",
+      "skillPath": "gherkin-authoring/SKILL.md",
+      "computedHash": "e6caf211a1d3cb4a8ce6405c500b1f591fda1a1a910403cacea8825ca49b9122"
+    }
+  }
+}
