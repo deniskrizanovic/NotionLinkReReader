@@ -29,13 +29,13 @@
 
 - [x] 5.1 Wire entrypoint: load config → query → normalize → select → compose → send; always send, including empty state
 - [x] 5.2 Add top-level error handling that logs before re-throwing so failures are visible in `launchd` logs
-- [ ] 5.3 Manual verification: run entrypoint once against the real database and confirm the email arrives
+- [x] 5.3 Manual verification: run entrypoint once against the real database and confirm the email arrives
 
 ## 6. Scheduling (capability: scheduled-run)
 
 - [x] 6.1 Create the `launchd` LaunchAgent plist with `StartCalendarInterval` for 05:00, invoking the `uv run` entrypoint, with stdout/stderr log paths
 - [x] 6.2 Document install steps (`launchctl load`), catch-up-on-wake behavior, and how env/secrets reach the job without being stored in the plist or repo
-- [ ] 6.3 Verify a scheduled fire (or a manually triggered `launchctl` run) produces a sent email
+- [x] 6.3 Verify a scheduled fire (or a manually triggered `launchctl` run) produces a sent email
 
 ## 7. Docs
 
