@@ -1,10 +1,15 @@
+import smtplib
 from datetime import date
 
+import pytest
+
+import notionlinkrereader.email as email
 from notionlinkrereader.email import (
     EMPTY_TEXT,
     build_message,
     compose_html,
     compose_text,
+    send_message,
 )
 from notionlinkrereader.notion import LinkRecord
 
@@ -82,3 +87,68 @@ def test_empty_message_subject_differs():
         [], sender="me@gmail.com", recipient="me@gmail.com", run_date=RUN_DATE
     )
     assert "No links" in empty["Subject"]
+
+
+class FakeSMTP:
+    """Records the SMTP conversation so send_message can be asserted on."""
+
+    instances = []
+
+    def __init__(self, host, port, timeout=None):
+        self.host = host
+        self.port = port
+        self.started_tls = False
+        self.login_args = None
+        self.sent = None
+        FakeSMTP.instances.append(self)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def starttls(self):
+        self.started_tls = True
+
+    def login(self, address, password):
+        self.login_args = (address, password)
+
+    def send_message(self, message):
+        self.sent = message
+
+
+def test_send_message_delivers_over_starttls(monkeypatch):
+    FakeSMTP.instances = []
+    monkeypatch.setattr(email.smtplib, "SMTP", FakeSMTP)
+
+    message = build_message(
+        [LinkRecord(name="A", page_url="https://notion.so/p")],
+        sender="me@gmail.com",
+        recipient="you@gmail.com",
+        run_date=RUN_DATE,
+    )
+    send_message(message, gmail_address="me@gmail.com", gmail_app_password="pw")
+
+    smtp = FakeSMTP.instances[0]
+    assert (smtp.host, smtp.port) == (email.SMTP_HOST, email.SMTP_PORT)
+    assert smtp.started_tls is True
+    assert smtp.login_args == ("me@gmail.com", "pw")
+    assert smtp.sent is message
+
+
+def test_send_failure_logs_and_reraises(monkeypatch, caplog):
+    class FailingSMTP(FakeSMTP):
+        def login(self, address, password):
+            raise smtplib.SMTPAuthenticationError(535, b"bad creds")
+
+    monkeypatch.setattr(email.smtplib, "SMTP", FailingSMTP)
+
+    message = build_message(
+        [], sender="me@gmail.com", recipient="you@gmail.com", run_date=RUN_DATE
+    )
+    with caplog.at_level("ERROR"):
+        with pytest.raises(smtplib.SMTPException):
+            send_message(message, gmail_address="me@gmail.com", gmail_app_password="pw")
+
+    assert "Failed to send email via Gmail SMTP" in caplog.text

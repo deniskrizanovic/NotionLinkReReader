@@ -31,7 +31,7 @@ The system SHALL run the job once per day at 11:00 local time on weekdays (Monda
 The system SHALL execute the job entrypoint with all secrets and identifiers supplied from the environment, keeping no secrets in the scheduled definition or the repository.
 
 #### Scenario: Entrypoint invoked with environment configuration
-> **Tests:** none
+> **Tests:** test_run_reads_environment_and_drives_pipeline
 - **GIVEN** an environment providing the Notion token, database id, Gmail credentials, and recipient
 - **WHEN** the scheduled agent triggers the entrypoint
 - **THEN** the job reads its configuration from the environment and runs without any secret stored in the schedule definition or repository

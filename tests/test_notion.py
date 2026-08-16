@@ -1,3 +1,5 @@
+import pytest
+
 import notionlinkrereader.notion as notion
 from notionlinkrereader.notion import (
     LinkRecord,
@@ -88,3 +90,16 @@ def test_query_follows_pagination(monkeypatch):
     assert [r["id"] for r in results] == ["1", "2"]
     assert calls[0].get("start_cursor") is None
     assert calls[1]["start_cursor"] == "cur1"
+
+
+def test_query_failure_logs_and_reraises(monkeypatch, caplog):
+    def fake_post(url, headers, json, timeout):
+        raise notion.httpx.HTTPError("boom")
+
+    monkeypatch.setattr(notion.httpx, "post", fake_post)
+
+    with caplog.at_level("ERROR"):
+        with pytest.raises(notion.httpx.HTTPError):
+            query_database("tok", "db")
+
+    assert "Notion database query failed" in caplog.text
