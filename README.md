@@ -93,6 +93,36 @@ Stop the schedule:
 launchctl unload ~/Library/LaunchAgents/com.notionlinkrereader.daily.plist
 ```
 
+## Checking link liveness
+
+A standalone, run-on-demand sweep classifies every saved link as `ALIVE`,
+`DEAD`, `UNSURE`, or `SKIPPED` (no URL) and writes a CSV report. It reuses the
+same Notion config and fetch path as the daily job, but never writes back to
+Notion or sends email.
+
+```bash
+uv run --env-file .env check-links                 # writes link-liveness-report.csv
+uv run --env-file .env check-links /tmp/report.csv # or a path you choose
+```
+
+Links are fetched concurrently with a bounded pool and a hard per-request
+timeout, so a hung link never stalls the batch. `DEAD` covers 404/410 and
+soft-404s (a `200` body carrying a strong removal phrase); `UNSURE` covers 5xx,
+timeouts, DNS/connection failures, and auth walls (401/403) so an ambiguous
+result is never reported as dead.
+
+The CSV has one row per link with these columns:
+
+| Column | Meaning |
+| --- | --- |
+| `name` | Link title from Notion |
+| `url` | The checked URL |
+| `page_url` | Notion page to jump back to |
+| `verdict` | `ALIVE` / `DEAD` / `UNSURE` / `SKIPPED` |
+| `http_status` | Final HTTP status after redirects (blank on failure) |
+| `final_url` | URL after following redirects |
+| `reason` | Human-readable explanation of the verdict |
+
 ## Development
 
 ```bash

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import sys
-from datetime import date
+from datetime import UTC, datetime
 
 from .config import load_config
 from .email import build_message, send_message
@@ -26,7 +26,7 @@ def run() -> None:
         selected,
         sender=config.gmail_address,
         recipient=config.email_to,
-        run_date=date.today(),
+        run_date=datetime.now(tz=UTC).date(),
     )
     send_message(
         message,

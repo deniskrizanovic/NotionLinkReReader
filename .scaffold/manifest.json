@@ -15,7 +15,7 @@
         "tokencost/sum-cost.py": "ffdfe55a1c9922fe5d1843bcbda6bee28f9263dc191cceb0f5fc040253c48479"
       },
       "kind": "file",
-      "source_sha": "86e1a8bab68aa172b433ab0aa0427ab231c1b7dd",
+      "source_sha": "c53f7a6b0db04ef36630e507299f6a2776ad3d7d",
       "version": 1
     },
     "enforcement-hooks": {
@@ -24,7 +24,7 @@
         "scripts/commit_gate.py": "9c146a112911eccbd6e281d68a6478dfdb5746aaee8ffb043a8d64465043e867"
       },
       "kind": "file",
-      "source_sha": "86e1a8bab68aa172b433ab0aa0427ab231c1b7dd",
+      "source_sha": "c53f7a6b0db04ef36630e507299f6a2776ad3d7d",
       "version": 1
     },
     "lint-gates": {
@@ -33,7 +33,7 @@
         "scripts/lint_specs.py": "ca0715554dff9e6a290c063f5fc8a712778ac8fd352be82f7c604503dfeda646"
       },
       "kind": "file",
-      "source_sha": "86e1a8bab68aa172b433ab0aa0427ab231c1b7dd",
+      "source_sha": "c53f7a6b0db04ef36630e507299f6a2776ad3d7d",
       "version": 1
     },
     "schema-clone": {
@@ -45,7 +45,7 @@
         "openspec/schemas/spec-driven/templates/tasks.md": "b2a6a4c08c15f347a1d8c3e2d43e0c8fb066dc5cc0feb795f47555f176f9c421"
       },
       "kind": "file",
-      "source_sha": "86e1a8bab68aa172b433ab0aa0427ab231c1b7dd",
+      "source_sha": "c53f7a6b0db04ef36630e507299f6a2776ad3d7d",
       "version": 1
     }
   }

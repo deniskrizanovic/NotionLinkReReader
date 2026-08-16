@@ -1,9 +1,10 @@
 import smtplib
 from datetime import date
+from typing import ClassVar
 
 import pytest
 
-import notionlinkrereader.email as email
+from notionlinkrereader import email
 from notionlinkrereader.email import (
     EMPTY_TEXT,
     build_message,
@@ -92,7 +93,7 @@ def test_empty_message_subject_differs():
 class FakeSMTP:
     """Records the SMTP conversation so send_message can be asserted on."""
 
-    instances = []
+    instances: ClassVar[list] = []
 
     def __init__(self, host, port, timeout=None):
         self.host = host
@@ -147,8 +148,7 @@ def test_send_failure_logs_and_reraises(monkeypatch, caplog):
     message = build_message(
         [], sender="me@gmail.com", recipient="you@gmail.com", run_date=RUN_DATE
     )
-    with caplog.at_level("ERROR"):
-        with pytest.raises(smtplib.SMTPException):
-            send_message(message, gmail_address="me@gmail.com", gmail_app_password="pw")
+    with caplog.at_level("ERROR"), pytest.raises(smtplib.SMTPException):
+        send_message(message, gmail_address="me@gmail.com", gmail_app_password="pw")
 
     assert "Failed to send email via Gmail SMTP" in caplog.text
