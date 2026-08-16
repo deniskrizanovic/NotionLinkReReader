@@ -8,6 +8,7 @@ dependencies = [
 
 [project.scripts]
 notion-link-rereader = "notionlinkrereader.__main__:main"
+check-links = "notionlinkrereader.linkcheck:main"
 
 [dependency-groups]
 dev = [
