@@ -1,0 +1,36 @@
+{
+  "gates": [
+    {
+      "name": "tests",
+      "cmd": [
+        "pytest",
+        "-q"
+      ],
+      "stopReason": "Tests failed \u2014 fix all failing tests before committing."
+    },
+    {
+      "name": "lint:specs",
+      "cmd": [
+        "python3",
+        "scripts/lint_specs.py"
+      ],
+      "stopReason": "lint:specs failed \u2014 every scenario needs a '> **Tests:**' line."
+    },
+    {
+      "name": "lint:given",
+      "cmd": [
+        "python3",
+        "scripts/lint_given.py"
+      ],
+      "stopReason": "lint:given failed \u2014 every scenario needs a '- **GIVEN**' clause."
+    },
+    {
+      "name": "lint:ruff",
+      "cmd": [
+        "ruff",
+        "check"
+      ],
+      "stopReason": "lint:ruff failed \u2014 fix the ruff lint/format findings before committing."
+    }
+  ]
+}

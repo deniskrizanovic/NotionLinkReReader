@@ -4,18 +4,16 @@ import csv
 import httpx
 import pytest
 
-import notionlinkrereader.linkcheck as linkcheck
+from notionlinkrereader import linkcheck
 from notionlinkrereader.linkcheck import (
     CheckResult,
     Verdict,
-    check_all,
     check_url,
     classify,
     detect_soft_404,
     write_report,
 )
 from notionlinkrereader.notion import LinkRecord
-
 
 # --- classify / detect_soft_404 (task 6.1) ---
 
@@ -62,7 +60,7 @@ def test_classify_strong_soft_404_is_dead():
 
 
 def test_classify_weak_signal_stays_unsure():
-    verdict, reason = classify(200, "tiny", None)
+    verdict, _reason = classify(200, "tiny", None)
     assert verdict is Verdict.UNSURE
     assert verdict is not Verdict.DEAD
 

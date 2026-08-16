@@ -69,6 +69,7 @@ def run_gates(project_dir: Path, gates: list[dict]) -> dict | None:
                 cwd=str(project_dir),
                 capture_output=True,
                 text=True,
+                check=False,
             )
         except FileNotFoundError as e:
             print(f"{gate['name']}: command not found: {e}", file=sys.stderr)

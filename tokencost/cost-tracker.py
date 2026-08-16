@@ -23,7 +23,6 @@ import sys
 import time
 import traceback
 from pathlib import Path
-from typing import Optional
 
 LOCK_TIMEOUT_SEC = 10
 LOCK_RETRY_SLEEP = 0.2
@@ -118,6 +117,7 @@ def ccusage_all_costs() -> dict[str, float]:
             capture_output=True,
             text=True,
             timeout=30,
+            check=False,
         )
         if proc.returncode != 0:
             return {}
@@ -272,7 +272,7 @@ def log_error(root: Path, msg: str) -> None:
     try:
         path = log_path(root)
         path.parent.mkdir(parents=True, exist_ok=True)
-        ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        ts = datetime.datetime.now(datetime.UTC).isoformat()
         with open(path, "a") as fh:
             fh.write(f"[{ts}] {msg}\n")
     except OSError:
@@ -292,22 +292,20 @@ def backfill() -> None:
     try:
         log_dir = root / "tokencost"
         log_dir.mkdir(parents=True, exist_ok=True)
-        devnull = open(os.devnull, "rb")
-        out = open(log_dir / "backfill.log", "ab")
-        proc = subprocess.Popen(
-            [sys.executable, str(Path(__file__).resolve()), "backfill-worker"],
-            stdin=subprocess.PIPE,
-            stdout=out,
-            stderr=out,
-            start_new_session=True,
-            env={**os.environ, "CLAUDE_PROJECT_DIR": str(root)},
-        )
-        if proc.stdin:
-            try:
-                proc.stdin.write(payload_raw.encode())
-            finally:
-                proc.stdin.close()
-        devnull.close()
+        with open(os.devnull, "rb"), open(log_dir / "backfill.log", "ab") as out:
+            proc = subprocess.Popen(
+                [sys.executable, str(Path(__file__).resolve()), "backfill-worker"],
+                stdin=subprocess.PIPE,
+                stdout=out,
+                stderr=out,
+                start_new_session=True,
+                env={**os.environ, "CLAUDE_PROJECT_DIR": str(root)},
+            )
+            if proc.stdin:
+                try:
+                    proc.stdin.write(payload_raw.encode())
+                finally:
+                    proc.stdin.close()
     except OSError as e:
         log_error(root, f"backfill spawn failed: {e}")
 
@@ -338,9 +336,9 @@ def backfill_worker() -> None:
                 if row is None:
                     continue
                 upsert_row(csv_file, row)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 log_error(root, f"backfill row {jsonl.name} failed: {e}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         log_error(root, "backfill-worker crashed:\n" + traceback.format_exc())
 
 
@@ -353,7 +351,7 @@ def main() -> int:
             backfill()
         elif mode == "backfill-worker":
             backfill_worker()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         root = project_root()
         if root:
             log_error(root, f"{mode} top-level failed: {e}\n{traceback.format_exc()}")

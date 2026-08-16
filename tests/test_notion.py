@@ -1,6 +1,6 @@
 import pytest
 
-import notionlinkrereader.notion as notion
+from notionlinkrereader import notion
 from notionlinkrereader.notion import (
     LinkRecord,
     normalize_row,
@@ -98,8 +98,7 @@ def test_query_failure_logs_and_reraises(monkeypatch, caplog):
 
     monkeypatch.setattr(notion.httpx, "post", fake_post)
 
-    with caplog.at_level("ERROR"):
-        with pytest.raises(notion.httpx.HTTPError):
-            query_database("tok", "db")
+    with caplog.at_level("ERROR"), pytest.raises(notion.httpx.HTTPError):
+        query_database("tok", "db")
 
     assert "Notion database query failed" in caplog.text
