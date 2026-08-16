@@ -2,23 +2,29 @@
 
 ## Purpose
 
-Run the job once daily at 05:00 local time on macOS via `launchd`, with all configuration supplied from the environment.
+Run the job once per weekday at 11:00 local time on macOS via `launchd`, with all configuration supplied from the environment.
 
 ## Requirements
 
-### Requirement: Run daily at 05:00 local time
-The system SHALL run the job once per day at 05:00 local time on macOS via a `launchd` calendar schedule.
+### Requirement: Run weekdays at 11:00 local time
+The system SHALL run the job once per day at 11:00 local time on weekdays (Monday through Friday) on macOS via a `launchd` calendar schedule, and SHALL NOT run on Saturday or Sunday.
 
 #### Scenario: Scheduled fire while awake
 > **Tests:** none
-- **GIVEN** an installed `launchd` agent scheduled for 05:00 local time and a machine that is awake at that time
-- **WHEN** the clock reaches 05:00
+- **GIVEN** an installed `launchd` agent scheduled for 11:00 local time on weekdays and a machine that is awake at that time
+- **WHEN** the clock reaches 11:00 on a weekday
 - **THEN** the job runs once and produces a sent email
+
+#### Scenario: No run on weekends
+> **Tests:** none
+- **GIVEN** an installed `launchd` agent scheduled for weekdays only
+- **WHEN** the clock reaches 11:00 on Saturday or Sunday
+- **THEN** the job does not run
 
 #### Scenario: Catch-up after sleep
 > **Tests:** none
-- **GIVEN** an installed `launchd` agent scheduled for 05:00 and a machine asleep at that time
-- **WHEN** the machine wakes after 05:00
+- **GIVEN** an installed `launchd` agent scheduled for 11:00 on weekdays and a machine asleep at that time
+- **WHEN** the machine wakes after 11:00 on a weekday
 - **THEN** `launchd` runs the missed job once on wake
 
 ### Requirement: Run the job with configuration from the environment

@@ -7,25 +7,49 @@ Compose and send the daily rereading email over Gmail, always sending — includ
 ## Requirements
 
 ### Requirement: Compose the rereading email
-The system SHALL compose an HTML email containing one section per selected link, rendering the name as a hyperlink to its Notion page and the url as a hyperlink to the external site, and showing the reason and tags.
-
-#### Scenario: Selected link rendered with all fields
-> **Tests:** none
-- **GIVEN** a selected link record with a name, page URL, url, reason, and tags
-- **WHEN** the email is composed
-- **THEN** the section shows the name as a link opening the Notion page, the url as a link opening the external site, the reason text, and the tags as a comma-separated list
-
-#### Scenario: Field value is unset
-> **Tests:** none
-- **GIVEN** a selected link record whose reason, tags, or url is unset
-- **WHEN** the email is composed
-- **THEN** the missing value is rendered as an em dash
+The system SHALL compose an email for the selected links that carries both an HTML part and a plain-text alternative part.
 
 #### Scenario: Email includes a plain-text alternative
 > **Tests:** none
 - **GIVEN** one or more selected link records
 - **WHEN** the email is composed
 - **THEN** the message carries both an HTML part with clickable links and a plain-text alternative part
+
+### Requirement: HTML email is a styled, self-contained document
+The composed HTML email SHALL be a complete HTML document that renders as a single
+centered card containing a header, one row per selected link, and a footer, so it
+reads as a finished message rather than a bare list of fields.
+
+#### Scenario: Composed HTML is a full document
+> **Tests:** none
+- **GIVEN** one or more selected link records
+- **WHEN** the email is composed
+- **THEN** the HTML is a complete document with a document type declaration and a head that declares support for light and dark color schemes
+- **AND** the links are laid out as a centered fixed-width card on a light background
+
+#### Scenario: Header shows count and date
+> **Tests:** none
+- **GIVEN** a selection of N link records for a given run date
+- **WHEN** the email is composed
+- **THEN** the header shows the number of links selected and the run date
+- **AND** a footer identifies the message as sent by NotionLinkReReader
+
+### Requirement: Each link renders as a scannable row
+The system SHALL render each selected link as its own row showing the name as a
+hyperlink to its Notion page, the external url as a hyperlink, the reason, and the
+tags as individual pill badges.
+
+#### Scenario: Link row with all fields
+> **Tests:** none
+- **GIVEN** a selected link record with a name, page URL, url, reason, and tags
+- **WHEN** the email is composed
+- **THEN** the row shows the name as a link opening the Notion page, the url as a clickable link, the reason text, and each tag as its own pill badge
+
+#### Scenario: Optional field is unset
+> **Tests:** none
+- **GIVEN** a selected link record whose reason, url, or tags are unset
+- **WHEN** the email is composed
+- **THEN** the reason renders as a muted placeholder, the url line is omitted, and no tag pills are shown, while the row still renders cleanly
 
 ### Requirement: Send the email via Gmail
 The system SHALL send the composed email to the configured recipient over Gmail SMTP authenticated with the configured Gmail address and app password.
@@ -43,10 +67,10 @@ The system SHALL send the composed email to the configured recipient over Gmail 
 - **THEN** the system logs the failure and re-throws it
 
 ### Requirement: Always send, including the empty state
-The system SHALL send an email on every run, sending an explicit empty-state message when no links were selected.
+The system SHALL send an email on every run, sending an explicit empty-state message when no links were selected, styled with the same document shell as a populated email.
 
 #### Scenario: No links selected
 > **Tests:** none
 - **GIVEN** a run whose selection contains zero link records
 - **WHEN** the email is composed and sent
-- **THEN** the recipient receives an email stating no links were found today so the successful run is observable
+- **THEN** the recipient receives a styled email using the same shell that states no links were found today, so the successful run is observable

@@ -56,13 +56,13 @@ Any empty property renders as an em dash (`—`) in the email.
 
 Sending is done over `smtp.gmail.com:587` with STARTTLS.
 
-## Scheduling with launchd (daily 05:00)
+## Scheduling with launchd (weekdays 11:00)
 
 `deploy/com.notionlinkrereader.daily.plist` is a LaunchAgent template. It runs
 `uv run --env-file .env notion-link-rereader` from the project directory at
-05:00 local time. `launchd` runs a **missed job on wake** (catch-up after
-sleep), unlike `cron`; a machine powered off through the window misses that day
-(fine — the next day resurfaces links).
+11:00 local time, Monday through Friday. `launchd` runs a **missed job on wake**
+(catch-up after sleep), unlike `cron`; a machine powered off through the window
+misses that day (fine — the next day resurfaces links).
 
 **Secrets never live in the plist or the repo.** The job reads them from `.env`
 via `uv run --env-file`, so the schedule definition stays credential-free.
