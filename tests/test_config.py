@@ -1,6 +1,6 @@
 import pytest
 
-from notionlinkrereader.config import DEFAULT_DATABASE_ID, ConfigError, load_config
+from notionlinkrereader.config import ConfigError, load_config
 
 FULL_ENV = {
     "NOTION_TOKEN": "secret",
@@ -18,17 +18,19 @@ def test_load_config_full():
     assert config.gmail_address == "me@gmail.com"
 
 
-def test_database_id_defaults_when_absent():
-    env = {k: v for k, v in FULL_ENV.items() if k != "NOTION_DATABASE_ID"}
-    config = load_config(env)
-    assert config.notion_database_id == DEFAULT_DATABASE_ID
-
-
 @pytest.mark.parametrize(
-    "missing", ["NOTION_TOKEN", "GMAIL_ADDRESS", "GMAIL_APP_PASSWORD", "EMAIL_TO"]
+    "missing",
+    ["NOTION_TOKEN", "NOTION_DATABASE_ID", "GMAIL_ADDRESS", "GMAIL_APP_PASSWORD", "EMAIL_TO"],
 )
 def test_missing_required_var_raises_naming_it(missing):
     env = {k: v for k, v in FULL_ENV.items() if k != missing}
     with pytest.raises(ConfigError) as excinfo:
         load_config(env)
     assert missing in str(excinfo.value)
+
+
+def test_missing_database_id_raises_naming_it():
+    env = {k: v for k, v in FULL_ENV.items() if k != "NOTION_DATABASE_ID"}
+    with pytest.raises(ConfigError) as excinfo:
+        load_config(env)
+    assert "NOTION_DATABASE_ID" in str(excinfo.value)
