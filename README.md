@@ -21,7 +21,7 @@ when the database is empty, so a successful run is always observable.
 | Variable | Required | Notes |
 | --- | --- | --- |
 | `NOTION_TOKEN` | yes | Notion internal integration token |
-| `NOTION_DATABASE_ID` | no | Defaults to the known database id |
+| `NOTION_DATABASE_ID` | yes | Notion database id to query |
 | `GMAIL_ADDRESS` | yes | Sending Gmail address |
 | `GMAIL_APP_PASSWORD` | yes | 16-char app password, spaces stripped |
 | `EMAIL_TO` | yes | Recipient address |
